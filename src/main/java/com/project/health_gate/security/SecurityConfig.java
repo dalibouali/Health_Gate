@@ -29,6 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtUtil jwtUtil;
+
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
 
@@ -42,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                         .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeHttpRequests().antMatchers("/api/register","/api/signin").permitAll()
+                .authorizeHttpRequests().antMatchers("/api/register","/api/signin","/admin/users").permitAll()
                 .anyRequest().authenticated();
 
 

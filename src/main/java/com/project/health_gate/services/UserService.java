@@ -24,4 +24,5 @@ public interface UserService {
     User updateProfile(UserDetails userDetails, User newUser);
 
 
+
 }

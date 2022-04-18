@@ -1,20 +1,27 @@
 package com.project.health_gate.security;
 
 
+import com.project.health_gate.entities.Erole;
+import com.project.health_gate.entities.Role;
+import com.project.health_gate.entities.User;
+import com.project.health_gate.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Service
 public class JwtUtil {
+    private UserRepository userRepository;
+    public JwtUtil(UserRepository userRepository){
+        this.userRepository=userRepository;
+    }
     private String SECRET_KEY = "secret";
 
     public String extractUsername(String token) {
@@ -39,10 +46,16 @@ public class JwtUtil {
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+        Set<String> Userroles = new HashSet<>();
+        User user = userRepository.findByUsername(userDetails.getUsername());
+        for(Role role:user.getRoles()){
+            Userroles.add(role.getName().toString());
+        }
+        claims.put("Roles",Userroles.toArray());
+        return createToken(claims, userDetails.getUsername(),userDetails.getAuthorities());
     }
 
-    private String createToken(Map<String, Object> claims, String subject) {
+    private String createToken(Map<String, Object> claims, String subject, Collection<? extends GrantedAuthority> authorities) {
 
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))

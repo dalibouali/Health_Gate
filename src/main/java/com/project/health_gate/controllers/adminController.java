@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/admin")
 @RequiredArgsConstructor
 public class adminController {
+    private final UserService userService;
 
     private final AdminService adminService;
 
@@ -22,5 +24,13 @@ public class adminController {
         return ResponseEntity.ok().body(adminService.confirm_doctor(id));
 
     }
+    @CrossOrigin(origins = "*")
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getUsers() {
+
+
+        return ResponseEntity.ok().body(userService.getUsers());
+    }
+
 
 }
