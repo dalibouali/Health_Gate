@@ -119,7 +119,7 @@ public class User implements Serializable {
     private String civilStatus;
 
 
-    public User(Long id, String firstName, String lastName, String username, String Phone,String password, String prolfileImageUrl,Specialities specialities, boolean enabled, String gender) {
+    public User(Long id, String firstName, String lastName, String username, String Phone,String password, String prolfileImageUrl,Specialities specialities, boolean enabled, String gender,Boolean IsVerified) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -130,6 +130,8 @@ public class User implements Serializable {
         this.gender = gender;
         this.specialities=specialities;
         this.phone=Phone;
+        this.IsVerified=IsVerified;
+
 
 
 

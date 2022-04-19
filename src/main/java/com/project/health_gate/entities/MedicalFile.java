@@ -14,7 +14,7 @@ public class MedicalFile {
     @OneToMany
     private List<Document> Content;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
     private User user;
 
 
