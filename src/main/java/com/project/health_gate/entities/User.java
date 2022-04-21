@@ -101,8 +101,8 @@ public class User implements Serializable {
     @Column(name="Bio")
     private String bio;
     /* Speciality*/
-    @Column(name="Specilaitiess")
-    private Specialities specialities;
+    @Column(name="specilaities")
+    private String specialities;
 
     @Column(name="IsVerified")
     private Boolean IsVerified;
@@ -119,7 +119,7 @@ public class User implements Serializable {
     private String civilStatus;
 
 
-    public User(Long id, String firstName, String lastName, String username, String Phone,String password, String prolfileImageUrl,Specialities specialities, boolean enabled, String gender,Boolean IsVerified) {
+    public User(Long id, String firstName, String lastName, String username, String Phone,String password, String prolfileImageUrl,String specialities, boolean enabled, String gender,Boolean IsVerified) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

@@ -74,6 +74,9 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
         if(newUser.getBio()!=null){
             currentUser.setBio(newUser.getBio());
         }
+        if(newUser.getProlfileImageUrl()!=null){
+            currentUser.setProlfileImageUrl(newUser.getProlfileImageUrl());
+        }
         if(newUser.getCity()!=null){
             currentUser.setCity(newUser.getCity());
         }

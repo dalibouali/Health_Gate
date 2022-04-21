@@ -69,7 +69,6 @@ public class userController {
 
 
     @PutMapping("/setProfile")
-
     public User setProfile(@RequestBody User user){
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
