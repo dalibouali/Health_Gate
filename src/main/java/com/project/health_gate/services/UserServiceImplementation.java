@@ -168,7 +168,7 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
         MedicalFile medicalfile = null;
         String username="";
         //get user loged in
-        Object principal = SecurityContextHolder. getContext(). getAuthentication(). getPrincipal();
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {
              username = ((UserDetails)principal). getUsername();
         } else {

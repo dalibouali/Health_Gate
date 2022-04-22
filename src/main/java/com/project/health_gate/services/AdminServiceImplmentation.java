@@ -1,8 +1,10 @@
 package com.project.health_gate.services;
 
+import com.project.health_gate.entities.Erole;
 import com.project.health_gate.entities.MedicalFile;
 import com.project.health_gate.entities.User;
 import com.project.health_gate.repository.MedicalFileRepository;
+import com.project.health_gate.repository.RoleRepository;
 import com.project.health_gate.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ public class AdminServiceImplmentation implements AdminService{
 
     private final UserRepository userRepository;
     private  final MedicalFileRepository medicalFileRepository;
+    private  final RoleRepository roleRepository;
 
 
 
@@ -35,6 +38,7 @@ public class AdminServiceImplmentation implements AdminService{
 
         if(doctorToConfirm!=null){
             doctorToConfirm.setIsVerified(true);
+            doctorToConfirm.getRoles().add(roleRepository.findByName(Erole.ROLE_DOCTOR));
             userRepository.save(doctorToConfirm);
         }else{
             System.out.println("User not found");

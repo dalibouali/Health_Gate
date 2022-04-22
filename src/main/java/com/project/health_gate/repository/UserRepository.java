@@ -15,7 +15,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
 @Query("select  u from User u where u.id=:id ")
     User findOneById(@Param("id")Long  id);
 
-    @Query(value = "select new  com.project.health_gate.entities.User(u.id, u.firstName, u.lastName , u.username, u.phone,u.password, u.prolfileImageUrl,u.specialities, u.enabled, u.gender,u.IsVerified) from User u  ")
+    @Query(" select  u from User u")
     List<User> findAllUsers();
 
 }

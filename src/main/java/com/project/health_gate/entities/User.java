@@ -65,6 +65,8 @@ public class User implements Serializable {
     private String gender;
 
     @ManyToMany(fetch= EAGER )
+    @JoinTable(name = "user_roles",joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Collection<Role> roles=new ArrayList<>();
 
     @Column(name = "phone")
@@ -131,6 +133,7 @@ public class User implements Serializable {
         this.specialities=specialities;
         this.phone=Phone;
         this.IsVerified=IsVerified;
+
 
 
 
