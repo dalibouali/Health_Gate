@@ -2,7 +2,9 @@ package com.project.health_gate.services;
 
 import com.project.health_gate.DTO.DtoUpdateUser;
 import com.project.health_gate.entities.*;
+
 import com.project.health_gate.repository.*;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -22,9 +24,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
+
 import java.util.*;
 
 @Service
@@ -38,9 +42,12 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
     private final PasswordEncoder passwordEncoder;
     private final MedicalFileRepository medicalFileRepository;
     private final DocumentRepository documentRepository;
+
+
     private final ApoointmentRepository appointmentRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+
 
 
     @Override
@@ -160,9 +167,34 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
 
     @Override
     public List<User> getUsers() {
-        log.info("Fetching  users");
+        List<User> allUsers = userRepository.findUsers();
 
-        return userRepository.findAllUsers();
+        List<User> doctorstoconfirm = new ArrayList<>();
+        for(User u: allUsers ){
+            System.out.println(u.getSpecialities());
+
+            if(u.getSpecialities()!=null){
+                System.out.println(u);
+                doctorstoconfirm.add(u);
+            }
+        }
+        System.out.println(doctorstoconfirm);
+        return doctorstoconfirm;
+    }
+    @Override
+    public List<User> getDoctors() {
+        List<User> allUsers = userRepository.findAllUsers();
+
+        List<User> doctors = new ArrayList<>();
+        for(User u: allUsers ){
+            System.out.println(u.getRoles());
+            if(u.getRoles().contains(roleRepository.findByName(Erole.ROLE_DOCTOR))){
+                System.out.println(u);
+                doctors.add(u);
+            }
+        }
+        System.out.println(doctors);
+        return doctors;
     }
 
     //upload any file to a medical file
@@ -193,8 +225,6 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
         return doc;
     }
 
-
-    //get all User's files
     public List<Document> GetFiles(){
         String username="";
         MedicalFile medicalfile = null;
@@ -211,6 +241,7 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
         return docs;
 
     }
+
 
 
     @Override
@@ -333,15 +364,6 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
         commentRepository.delete(comment);
 
     }
-    @Override
-    public List<User> getDoctors() {
-        List<User> allUsers = userRepository.findAllUsers();
-        List<User> doctors = new ArrayList<>();
-        for(User u: allUsers ){
-            if(u.getRoles().contains(roleRepository.findByName(Erole.ROLE_DOCTOR))){
-                doctors.add(u);
-            }
-        }
-        return doctors;
-    }
+
+
 }

@@ -41,6 +41,8 @@ public class adminController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @CrossOrigin(origins = "*")
     @GetMapping("/user/{id}")
     public ResponseEntity<?> showUserDetails(@PathVariable Long id){
 
@@ -73,6 +75,7 @@ public class adminController {
 
         return ResponseEntity.ok().body(Doctors);
     }
+
     @CrossOrigin("*")
     @PostMapping("/deleteComment/{id}")
     public ResponseEntity<?> deleteComment(@PathVariable Long id) {
@@ -89,6 +92,7 @@ public class adminController {
 
         return ResponseEntity.ok().build();
     }
+
 
 
 }

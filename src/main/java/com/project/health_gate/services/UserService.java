@@ -1,13 +1,17 @@
 package com.project.health_gate.services;
 
 import com.project.health_gate.DTO.DtoUpdateUser;
+
 import com.project.health_gate.entities.*;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+
 import java.util.Date;
+
 import java.util.List;
 
 @Service
@@ -19,6 +23,7 @@ public interface UserService {
     List<User> getUsers();
     Document addFileToMedicalFile(MultipartFile multipartFile) throws IOException;
     List<Document> GetFiles();
+
     User updateProfile(UserDetails userDetails, User newUser);
     void deleteFileFromMedicalFile(Long id);
     void addDiscription(Long id,String disc);
@@ -31,6 +36,7 @@ public interface UserService {
     void deleteMyPost(Long id);
     void deleteMyComment(Long id);
     List<User> getDoctors();
+
 
 
 

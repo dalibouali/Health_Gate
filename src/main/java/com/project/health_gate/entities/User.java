@@ -59,6 +59,8 @@ public class User implements Serializable {
 
 
 
+
+
     @Column(name = "gender")
     private String gender;
 
@@ -81,7 +83,7 @@ public class User implements Serializable {
     @Column(name = "height")
     @NotEmpty(message = "Please provide your first name")
     private String height;
-    /* can be deleted*/
+
 
 
     /* Diploma*/
@@ -105,6 +107,7 @@ public class User implements Serializable {
     @Column(name="IsVerified")
     private Boolean IsVerified;
 
+
     @ManyToMany
     private List<User> MyDoctors;
 
@@ -112,23 +115,30 @@ public class User implements Serializable {
     private List<User> MyPatients;
 
 
+
     private String diseases;
 
     private boolean  isActive;
 
+
     private boolean isLocked;
+
 
     @Column(name="civil_status")
     private String civilStatus;
 
 
+
     public User(Long id, String firstName, String lastName, String username, String Phone,String password, String prolfileImageUrl,String specialities,  String gender,Boolean IsVerified) {
+
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.password = password;
         this.prolfileImageUrl = prolfileImageUrl;
+
+
 
         this.gender = gender;
         this.specialities=specialities;

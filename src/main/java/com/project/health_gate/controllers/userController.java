@@ -6,7 +6,9 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.health_gate.DTO.DtoUpdateUser;
+
 import com.project.health_gate.DTO.RequestAppointment;
+
 import com.project.health_gate.entities.*;
 import com.project.health_gate.security.JwtUtil;
 import com.project.health_gate.services.UserService;
@@ -56,6 +58,12 @@ public class userController {
     }
 
 
+    @GetMapping("/doctors")
+    public ResponseEntity<List<User>> getDoctors() {
+        return ResponseEntity.ok().body(userService.getDoctors());
+    }
+
+
 
 
     @PostMapping (value="/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -80,6 +88,7 @@ public class userController {
         return user;
 
     }
+
     @CrossOrigin("*")
     @DeleteMapping("/deleteFile/{id}")
     public ResponseEntity<?> deleteFile(@PathVariable Long id) {
@@ -156,10 +165,7 @@ public class userController {
 
         return ResponseEntity.ok().build();
     }
-    @GetMapping("/doctors")
-    public ResponseEntity<List<User>> getDoctors() {
-        return ResponseEntity.ok().body(userService.getDoctors());
-    }
+
 
 
 

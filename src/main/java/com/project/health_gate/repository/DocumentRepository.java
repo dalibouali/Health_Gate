@@ -10,10 +10,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
+
+
+
 
 @Repository
 public interface DocumentRepository extends JpaRepository<Document,Long> {
+
 
 
 
@@ -22,4 +25,5 @@ public interface DocumentRepository extends JpaRepository<Document,Long> {
 
     @Query("select new Document(d.FileId,d.name,d.size,d.uploadTime,d.content,d.medicalfile,d.discription) From Document d WHERE d.FileId=:FileId")
     Document findByFileId(@Param("FileId") Long FileId);
+
 }

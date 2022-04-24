@@ -12,10 +12,14 @@ public interface UserRepository extends JpaRepository<User,Long> {
     User findByUsername(String username);
     User deleteUserById(Long id);
 
-@Query("select  new User(u.id, u.firstName, u.lastName, u.username, u.phone,u.password, u.prolfileImageUrl,u.specialities,  u.gender,u.IsVerified) from User u where u.id=:id ")
+
+@Query("select  u from User u where u.id=:id ")
     User findOneById(@Param("id")Long  id);
 
-    @Query(" select  new User(u.id, u.firstName, u.lastName, u.username, u.phone,u.password, u.prolfileImageUrl,u.specialities,  u.gender,u.IsVerified) from User u")
+    @Query(" select  u from User u")
     List<User> findAllUsers();
+
+    @Query(" select  new User(u.id, u.firstName, u.lastName, u.username, u.phone,u.password, u.prolfileImageUrl,u.specialities,  u.gender,u.IsVerified) from User u")
+    List<User> findUsers();
 
 }

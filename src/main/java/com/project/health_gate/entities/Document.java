@@ -26,6 +26,7 @@ public class Document {
 
     private byte[] content;
 
+
     @Column(nullable = true)
     private String discription="No discription until now";
 
@@ -38,13 +39,16 @@ public class Document {
         this.discription=disc;
     }
     public Document(Long fileId, String name, long size,Date uploadTime,byte[] content,MedicalFile medicalfile,String disc) {
+
         FileId = fileId;
         this.name = name;
         this.size = size;
         this.uploadTime=uploadTime;
         this.content=content;
+
         this.discription=disc;
         this.medicalfile=medicalfile;
+
     }
 
     @ManyToOne
