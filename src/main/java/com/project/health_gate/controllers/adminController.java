@@ -73,6 +73,22 @@ public class adminController {
 
         return ResponseEntity.ok().body(Doctors);
     }
+    @CrossOrigin("*")
+    @PostMapping("/deleteComment/{id}")
+    public ResponseEntity<?> deleteComment(@PathVariable Long id) {
+
+        userService.deleteMyComment(id);
+
+        return ResponseEntity.ok().build();
+    }
+    @CrossOrigin("*")
+    @PostMapping("/deletePost/{id}")
+    public ResponseEntity<?> deletePost(@PathVariable Long id) {
+
+        userService.deleteMyPost(id);
+
+        return ResponseEntity.ok().build();
+    }
 
 
 }

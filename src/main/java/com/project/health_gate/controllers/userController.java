@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.health_gate.DTO.DtoUpdateUser;
+import com.project.health_gate.DTO.RequestAppointment;
 import com.project.health_gate.entities.*;
 import com.project.health_gate.security.JwtUtil;
 import com.project.health_gate.services.UserService;
@@ -79,6 +80,87 @@ public class userController {
         return user;
 
     }
+    @CrossOrigin("*")
+    @DeleteMapping("/deleteFile/{id}")
+    public ResponseEntity<?> deleteFile(@PathVariable Long id) {
+        userService.deleteFileFromMedicalFile(id);
+
+        return ResponseEntity.ok().build();
+    }
+
+
+    @CrossOrigin("*")
+    @PutMapping("/addDiscription/{id}")
+    public ResponseEntity<?> addDiscription(@PathVariable Long id,@RequestBody String disc) {
+        userService.addDiscription(id,disc);
+
+        return ResponseEntity.ok().build();
+    }
+    @CrossOrigin("*")
+    @PutMapping("/addDoctorToMyList/{id}")
+    public ResponseEntity<?> addDiscription(@PathVariable Long id) {
+        userService.addDoctorToMyList(id);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @CrossOrigin("*")
+    @PostMapping("/sendAppointment")
+    public ResponseEntity<?> sendAppointment(@RequestBody RequestAppointment request) {
+
+        userService.SendAppointmentRequest(request.getDate(), request.getDoctor(), request.getMessage());
+
+        return ResponseEntity.ok().build();
+    }
+    @CrossOrigin("*")
+    @PostMapping("/makePost")
+    public ResponseEntity<?> makepost(@RequestBody String content) {
+
+        userService.makePost(content);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @CrossOrigin("*")
+    @PostMapping("/makeComment/{id}")
+    public ResponseEntity<?> makeComment(@RequestBody String content,@PathVariable Long id) {
+
+        userService.makeComment(content,id);
+
+        return ResponseEntity.ok().build();
+    }
+    @CrossOrigin("*")
+    @GetMapping("/showPosts/")
+    public ResponseEntity<?> showPosts() {
+        return ResponseEntity.ok().body(userService.showPosts());
+    }
+    @CrossOrigin("*")
+    @GetMapping("/showCommentsPerPost/{id}")
+    public ResponseEntity<?> showCommentsPerPost(@PathVariable Long id) {
+        return ResponseEntity.ok().body(userService.showCommentsPerPost(id));
+    }
+
+    @CrossOrigin("*")
+    @PostMapping("/deleteMyComment/{id}")
+    public ResponseEntity<?> deleteMyComment(@PathVariable Long id) {
+
+        userService.deleteMyComment(id);
+
+        return ResponseEntity.ok().build();
+    }
+    @CrossOrigin("*")
+    @PostMapping("/deleteMyPost/{id}")
+    public ResponseEntity<?> deleteMyPost(@PathVariable Long id) {
+
+        userService.deleteMyPost(id);
+
+        return ResponseEntity.ok().build();
+    }
+    @GetMapping("/doctors")
+    public ResponseEntity<List<User>> getDoctors() {
+        return ResponseEntity.ok().body(userService.getDoctors());
+    }
+
 
 
 
