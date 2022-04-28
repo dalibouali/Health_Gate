@@ -33,6 +33,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -71,6 +72,13 @@ public class userController {
         userService.addFileToMedicalFile(multipartFile);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping (value="/uploadImage" )
+    public ResponseEntity<?> uploadImage(@RequestBody String imagePath) throws IOException {
+        userService.addProfileImage(imagePath);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/files")
     public ResponseEntity<List<Document>> GetFiles()  {
         return ResponseEntity.ok().body(userService.GetFiles());
@@ -89,7 +97,8 @@ public class userController {
 
     }
 
-    @CrossOrigin("*")
+
+
     @DeleteMapping("/deleteFile/{id}")
     public ResponseEntity<?> deleteFile(@PathVariable Long id) {
         userService.deleteFileFromMedicalFile(id);
@@ -98,22 +107,23 @@ public class userController {
     }
 
 
-    @CrossOrigin("*")
+
     @PutMapping("/addDiscription/{id}")
     public ResponseEntity<?> addDiscription(@PathVariable Long id,@RequestBody String disc) {
         userService.addDiscription(id,disc);
 
         return ResponseEntity.ok().build();
     }
-    @CrossOrigin("*")
-    @PutMapping("/addDoctorToMyList/{id}")
-    public ResponseEntity<?> addDiscription(@PathVariable Long id) {
+
+    @PostMapping("/addDoctorToMyList/{id}")
+    public ResponseEntity<?> addDoctorToMyList(@PathVariable Long id) {
+
         userService.addDoctorToMyList(id);
 
         return ResponseEntity.ok().build();
     }
 
-    @CrossOrigin("*")
+
     @PostMapping("/sendAppointment")
     public ResponseEntity<?> sendAppointment(@RequestBody RequestAppointment request) {
 
@@ -121,7 +131,16 @@ public class userController {
 
         return ResponseEntity.ok().build();
     }
-    @CrossOrigin("*")
+
+    @GetMapping("/showMyProfileImg")
+    public String ShowProfileImg()  {
+
+        System.out.println(userService.showrPofileImage());
+
+        return userService.showrPofileImage();
+    }
+
+
     @PostMapping("/makePost")
     public ResponseEntity<?> makepost(@RequestBody String content) {
 
@@ -130,7 +149,7 @@ public class userController {
         return ResponseEntity.ok().build();
     }
 
-    @CrossOrigin("*")
+
     @PostMapping("/makeComment/{id}")
     public ResponseEntity<?> makeComment(@RequestBody String content,@PathVariable Long id) {
 
@@ -138,18 +157,18 @@ public class userController {
 
         return ResponseEntity.ok().build();
     }
-    @CrossOrigin("*")
+
     @GetMapping("/showPosts/")
     public ResponseEntity<?> showPosts() {
         return ResponseEntity.ok().body(userService.showPosts());
     }
-    @CrossOrigin("*")
+
     @GetMapping("/showCommentsPerPost/{id}")
     public ResponseEntity<?> showCommentsPerPost(@PathVariable Long id) {
         return ResponseEntity.ok().body(userService.showCommentsPerPost(id));
     }
 
-    @CrossOrigin("*")
+
     @PostMapping("/deleteMyComment/{id}")
     public ResponseEntity<?> deleteMyComment(@PathVariable Long id) {
 
@@ -157,17 +176,56 @@ public class userController {
 
         return ResponseEntity.ok().build();
     }
-    @CrossOrigin("*")
-    @PostMapping("/deleteMyPost/{id}")
+
+    @DeleteMapping("/deleteMyPost/{id}")
     public ResponseEntity<?> deleteMyPost(@PathVariable Long id) {
 
         userService.deleteMyPost(id);
 
         return ResponseEntity.ok().build();
     }
+    @GetMapping("/findApoointmentsAsUser")
+    public ResponseEntity<List<Appointment>> findAppointmentsAsUser(){
+        return ResponseEntity.ok().body(userService.getAppointmentsAsUser());
+    }
+
+    @PutMapping("/EditAppointments/{id}")
+    public ResponseEntity<?> EditAppointments(@PathVariable Long id,@RequestBody Date date) {
+        userService.EditDate(id,date);
+
+        return ResponseEntity.ok().build();
+    }
 
 
+    @DeleteMapping("/cancelAppointment/{id}")
+    public ResponseEntity<?> cancelAppointment(@PathVariable Long id) {
 
+        userService.CancelApoointment(id);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("getFileContent/{id}")
+    public ResponseEntity<String> getFileContent(@PathVariable Long id) throws IOException {
+        try{
+            return ResponseEntity.ok().body(userService.GetFileContent(id));
+
+        }catch (IOException e){
+            return ResponseEntity.status(400).body("No File Exist "+e);
+        }
+
+    }
+    @PutMapping("setFileContent/{id}")
+    public ResponseEntity<?> setFileContent(@PathVariable Long id,@RequestBody String newContent) throws IOException {
+        try{
+            userService.SetFileContent(id,newContent);
+            return ResponseEntity.ok().build();
+
+        }catch (IOException e){
+            return ResponseEntity.status(400).body("No such File Exist "+e);
+        }
+
+    }
 
 
 

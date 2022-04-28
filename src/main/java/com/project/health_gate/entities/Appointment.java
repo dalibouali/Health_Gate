@@ -34,5 +34,7 @@ public class Appointment {
 
     private String message;
 
+    private  boolean isConfirmed;
+
 
 }

@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import java.util.Date;
@@ -36,6 +38,17 @@ public interface UserService {
     void deleteMyPost(Long id);
     void deleteMyComment(Long id);
     List<User> getDoctors();
+    String addProfileImage(String imagepath) throws IOException;
+    String showrPofileImage();
+    List<Appointment> getAppointmentsAsUser();
+    void CancelApoointment(Long id);
+    void EditDate(Long id,Date date );
+
+    String GetFileContent(Long id) throws IOException;
+
+    void SetFileContent(Long id,String newContent)throws IOException;
+
+
 
 
 

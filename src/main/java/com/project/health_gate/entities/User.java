@@ -9,10 +9,12 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.Transient;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;

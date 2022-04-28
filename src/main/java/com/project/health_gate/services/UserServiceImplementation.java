@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,8 +24,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -42,6 +51,7 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
     private final PasswordEncoder passwordEncoder;
     private final MedicalFileRepository medicalFileRepository;
     private final DocumentRepository documentRepository;
+    private final ApoointmentRepository apoointmentRepository;
 
 
     private final ApoointmentRepository appointmentRepository;
@@ -130,6 +140,7 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
         userRepository.save(currentUser);
         return currentUser;
     }
+
     @Override
     public User saveUser(User user) {
         log.info("saving new user {} to the database",user.getUsername());
@@ -181,6 +192,7 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
         System.out.println(doctorstoconfirm);
         return doctorstoconfirm;
     }
+
     @Override
     public List<User> getDoctors() {
         List<User> allUsers = userRepository.findAllUsers();
@@ -259,15 +271,20 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
 
     @Override
     public void addDoctorToMyList(Long id) {
-        String username="";
+
         User doctor=userRepository.findOneById(id);
-        Object principal = SecurityContextHolder. getContext(). getAuthentication(). getPrincipal();
+        String username="";
+        //get user loged in
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println(principal);
         if (principal instanceof UserDetails) {
             username = ((UserDetails)principal). getUsername();
         } else {
             username = principal. toString();
         }
+
         User user=userRepository.findByUsername(username);
+        System.out.println(username);
         user.getMyDoctors().add(doctor);
 
 
@@ -366,4 +383,93 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
     }
 
 
+    @Override
+    public String addProfileImage(String imagePath) throws IOException {
+
+
+        String username="";
+        //get user loged in
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails)principal). getUsername();
+        } else {
+            username = principal. toString();
+        }
+        User user=userRepository.findByUsername(username);
+         user.setProlfileImageUrl("assets/img/doctors/"+imagePath);
+        return "assets/img/doctors/"+imagePath;
+    }
+
+    @Override
+    public String showrPofileImage() {
+        String username="";
+        //get user loged in
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails)principal). getUsername();
+        } else {
+            username = principal. toString();
+        }
+        User user=userRepository.findByUsername(username);
+        return user.getProlfileImageUrl();
+    }
+
+    @Override
+    public List<Appointment> getAppointmentsAsUser() {
+        String username="";
+        //get user loged in
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails)principal). getUsername();
+        } else {
+            username = principal. toString();
+        }
+        User user=userRepository.findByUsername(username);
+        return  appointmentRepository.findAppointmentByPatient(user);
+
+
+
+    }
+
+    @Override
+    public void CancelApoointment(Long id) {
+        appointmentRepository.delete(appointmentRepository.findAppointmentById(id));
+
+    }
+
+    @Override
+    public void EditDate(Long id,Date date) {
+        Appointment app=appointmentRepository.findAppointmentById(id);
+
+        app.setDate(date);
+        app.setTime(null);
+        app.setConfirmed(false);
+
+    }
+
+    @Override
+    public String GetFileContent(Long id) throws FileNotFoundException,IOException {
+        Document doc=documentRepository.findByFileId(id);
+        File file= ResourceUtils.getFile("classpath:"+doc.getName());
+        String content=new String((Files.readAllBytes(file.toPath())));
+        System.out.println(content);
+
+        return content;
+
+    }
+
+    @Override
+    public void SetFileContent(Long id,String newContent) throws IOException {
+
+        Document doc=documentRepository.findByFileId(id);
+
+
+        Path fichier=Paths.get(doc.getName());
+        Files.writeString(fichier,newContent,StandardOpenOption.APPEND);
+
+
+
+
+
+    }
 }
