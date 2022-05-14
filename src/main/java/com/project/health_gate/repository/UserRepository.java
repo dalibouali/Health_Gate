@@ -19,7 +19,10 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Query(" select  u from User u")
     List<User> findAllUsers();
 
-    @Query(" select  new User(u.id, u.firstName, u.lastName, u.username, u.phone,u.password, u.prolfileImageUrl,u.specialities,  u.gender,u.IsVerified) from User u")
+    @Query(" select  new User(u.id, u.firstName, u.lastName, u.username, u.phone,u.password, u.prolfileImageUrl,u.specialities,  u.gender,u.IsVerified,u.bio) from User u")
     List<User> findUsers();
+
+
+
 
 }

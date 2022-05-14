@@ -107,14 +107,13 @@ public class User implements Serializable {
     private String specialities;
 
     @Column(name="IsVerified")
-    private Boolean IsVerified;
+    private Boolean IsVerified=false;
 
 
     @ManyToMany
     private List<User> MyDoctors;
 
-    @ManyToMany
-    private List<User> MyPatients;
+
 
 
 
@@ -131,7 +130,7 @@ public class User implements Serializable {
 
 
 
-    public User(Long id, String firstName, String lastName, String username, String Phone,String password, String prolfileImageUrl,String specialities,  String gender,Boolean IsVerified) {
+    public User(Long id, String firstName, String lastName, String username, String Phone,String password, String prolfileImageUrl,String specialities,  String gender,Boolean IsVerified,String bio,List<User> MyDoctors) {
 
         this.id = id;
         this.firstName = firstName;
@@ -139,6 +138,29 @@ public class User implements Serializable {
         this.username = username;
         this.password = password;
         this.prolfileImageUrl = prolfileImageUrl;
+        this.bio=bio;
+        this.MyDoctors=MyDoctors;
+
+
+        this.gender = gender;
+        this.specialities=specialities;
+        this.phone=Phone;
+        this.IsVerified=IsVerified;
+
+
+
+
+
+    }
+    public User(Long id, String firstName, String lastName, String username, String Phone,String password, String prolfileImageUrl,String specialities,  String gender,Boolean IsVerified,String bio) {
+
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.password = password;
+        this.prolfileImageUrl = prolfileImageUrl;
+        this.bio=bio;
 
 
 

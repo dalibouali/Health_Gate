@@ -12,6 +12,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import java.sql.Time;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 
 import java.util.List;
@@ -29,8 +32,8 @@ public interface UserService {
     User updateProfile(UserDetails userDetails, User newUser);
     void deleteFileFromMedicalFile(Long id);
     void addDiscription(Long id,String disc);
-    void addDoctorToMyList(Long id);
-    void SendAppointmentRequest(Date date, Long id, String message);
+    boolean addDoctorToMyList(Long id,String username);
+    void SendAppointmentRequest(LocalDateTime date, Long id, String message);
     void makePost(String Content);
     void makeComment(String Content,Long id);
     List<Post> showPosts();
@@ -38,15 +41,23 @@ public interface UserService {
     void deleteMyPost(Long id);
     void deleteMyComment(Long id);
     List<User> getDoctors();
+    List<User> getMyDoctors();
+
+    void deletedoctorfromMyList(Long id,String username);
     String addProfileImage(String imagepath) throws IOException;
     String showrPofileImage();
     List<Appointment> getAppointmentsAsUser();
+    List<Appointment> getAppointmentAsDoctor();
     void CancelApoointment(Long id);
-    void EditDate(Long id,Date date );
+    void EditDate(Long id, LocalDateTime date );
 
     String GetFileContent(Long id) throws IOException;
 
     void SetFileContent(Long id,String newContent)throws IOException;
+
+    void setAppointmentDate(Long id, LocalTime time);
+
+    List<User> getMyPatients();
 
 
 

@@ -36,6 +36,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import java.util.*;
@@ -177,6 +178,17 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
     }
 
     @Override
+    public boolean addDoctorToMyList(Long id,String username) {
+        User doctor =userRepository.findOneById(id);
+
+        User user=userRepository.findByUsername(username);
+
+
+
+        return user.getMyDoctors().add(doctor);
+    }
+
+    @Override
     public List<User> getUsers() {
         List<User> allUsers = userRepository.findUsers();
 
@@ -195,18 +207,41 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
 
     @Override
     public List<User> getDoctors() {
-        List<User> allUsers = userRepository.findAllUsers();
+        List<User> allUsers = userRepository.findUsers();
 
         List<User> doctors = new ArrayList<>();
         for(User u: allUsers ){
             System.out.println(u.getRoles());
-            if(u.getRoles().contains(roleRepository.findByName(Erole.ROLE_DOCTOR))){
+            if(u.getIsVerified()==true){
                 System.out.println(u);
                 doctors.add(u);
             }
         }
         System.out.println(doctors);
         return doctors;
+    }
+
+    @Override
+    public void deletedoctorfromMyList(Long id,String username) {
+        User doc=userRepository.findOneById(id);
+
+        User user=userRepository.findByUsername(username);
+        user.getMyDoctors().remove(doc);
+
+    }
+
+    @Override
+    public List<User> getMyDoctors() {
+        String username="";
+        //get user loged in
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails)principal). getUsername();
+        } else {
+            username = principal. toString();
+        }
+        User user=userRepository.findByUsername(username);
+        return user.getMyDoctors();
     }
 
     //upload any file to a medical file
@@ -269,30 +304,9 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
     documentRepository.save(doc);
     }
 
-    @Override
-    public void addDoctorToMyList(Long id) {
-
-        User doctor=userRepository.findOneById(id);
-        String username="";
-        //get user loged in
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println(principal);
-        if (principal instanceof UserDetails) {
-            username = ((UserDetails)principal). getUsername();
-        } else {
-            username = principal. toString();
-        }
-
-        User user=userRepository.findByUsername(username);
-        System.out.println(username);
-        user.getMyDoctors().add(doctor);
-
-
-
-    }
 
     @Override
-    public void SendAppointmentRequest(Date date, Long id, String message) {
+    public void SendAppointmentRequest(LocalDateTime date, Long id, String message) {
         String username="";
         Object principal = SecurityContextHolder. getContext(). getAuthentication(). getPrincipal();
         if (principal instanceof UserDetails) {
@@ -305,9 +319,18 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
         Appointment appointment=new Appointment();
         appointment.setPatient(user);
         appointment.setDoctor(userRepository.findOneById(id));
+
         appointment.setDate(date);
         appointment.setMessage(message);
         appointmentRepository.save(appointment);
+
+
+    }
+
+    @Override
+    public void setAppointmentDate(Long id,LocalTime time) {
+        Appointment app=appointmentRepository.findAppointmentById(id);
+        app.setTime(time);
 
 
     }
@@ -432,18 +455,32 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
     }
 
     @Override
+    public List<Appointment> getAppointmentAsDoctor() {
+        String username="";
+        //get user loged in
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails)principal). getUsername();
+        } else {
+            username = principal. toString();
+        }
+        User user=userRepository.findByUsername(username);
+        return  appointmentRepository.findAppointmentByDoctor(user);
+    }
+
+    @Override
     public void CancelApoointment(Long id) {
         appointmentRepository.delete(appointmentRepository.findAppointmentById(id));
 
     }
 
     @Override
-    public void EditDate(Long id,Date date) {
+    public void EditDate(Long id,LocalDateTime date) {
         Appointment app=appointmentRepository.findAppointmentById(id);
 
         app.setDate(date);
         app.setTime(null);
-        app.setConfirmed(false);
+        app.setConfirmed(true);
 
     }
 
@@ -471,5 +508,26 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
 
 
 
+    }
+
+    @Override
+    public List<User> getMyPatients() {
+        List<User> myPatients=new ArrayList<>();
+        String username="";
+        //get user loged in
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails)principal). getUsername();
+        } else {
+            username = principal. toString();
+        }
+        User user=userRepository.findByUsername(username);
+        List<User> allusers=userRepository.findAllUsers();
+        for(User u:allusers){
+            if(u.getMyDoctors().contains(user))
+                myPatients.add(u);
+
+        }
+        return myPatients;
     }
 }

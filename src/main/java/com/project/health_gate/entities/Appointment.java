@@ -10,6 +10,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
 
@@ -22,7 +23,7 @@ public class Appointment {
     private Long  id;
 
 
-    private Date date;
+    private LocalDateTime date;
 
     private LocalTime time;
 

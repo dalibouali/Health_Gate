@@ -10,6 +10,7 @@ import com.project.health_gate.DTO.DtoUpdateUser;
 import com.project.health_gate.DTO.RequestAppointment;
 
 import com.project.health_gate.entities.*;
+import com.project.health_gate.repository.UserRepository;
 import com.project.health_gate.security.JwtUtil;
 import com.project.health_gate.services.UserService;
 import com.project.health_gate.services.UserServiceImplementation;
@@ -17,6 +18,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -37,6 +39,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -52,6 +57,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class userController {
 
     private final UserService userService;
+    private final UserRepository userRepository;
+
+
+
 
     @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers() {
@@ -62,6 +71,22 @@ public class userController {
     @GetMapping("/doctors")
     public ResponseEntity<List<User>> getDoctors() {
         return ResponseEntity.ok().body(userService.getDoctors());
+    }
+    @GetMapping("/Mydoctors")
+    public ResponseEntity<List<User>> getMyDoctors() {
+        return ResponseEntity.ok().body(userService.getMyDoctors());
+    }
+    @GetMapping("/Mypatients")
+    public ResponseEntity<List<User>> getMyPatients() {
+        return ResponseEntity.ok().body(userService.getMyPatients());
+    }
+
+
+    @PutMapping("deleteDoctorFromMyList/{id}")
+    public ResponseEntity<?> deleteDoctorFromMyList(@PathVariable Long id,@RequestBody String username){
+        userService.deletedoctorfromMyList(id,username);
+        return ResponseEntity.ok().build();
+
     }
 
 
@@ -114,11 +139,27 @@ public class userController {
 
         return ResponseEntity.ok().build();
     }
+    @GetMapping("/user/{id}")
+    public ResponseEntity<?> showUserDetails(@PathVariable Long id){
 
-    @PostMapping("/addDoctorToMyList/{id}")
-    public ResponseEntity<?> addDoctorToMyList(@PathVariable Long id) {
+        User user =userRepository.findOneById(id);
+        if(user!=null)
+            return  ResponseEntity.ok().body(user);
+        else
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User Not Found");
 
-        userService.addDoctorToMyList(id);
+
+
+    }
+    @PutMapping("/Editappointment/{id}")
+    public void Editappointment(@PathVariable Long id,@RequestBody LocalDateTime date){
+        userService.EditDate(id,date);
+    }
+
+    @PutMapping("/addDoctorToMyList/{id}")
+    public ResponseEntity<?> addDoctorToMyList(@PathVariable Long id,@RequestBody String username) {
+
+        userService.addDoctorToMyList(id,username);
 
         return ResponseEntity.ok().build();
     }
@@ -188,10 +229,24 @@ public class userController {
     public ResponseEntity<List<Appointment>> findAppointmentsAsUser(){
         return ResponseEntity.ok().body(userService.getAppointmentsAsUser());
     }
+    @GetMapping("/findApoointmentsAsDoctor")
+    public ResponseEntity<List<Appointment>> findApoointmentsAsDoctor(){
+        return ResponseEntity.ok().body(userService.getAppointmentAsDoctor());
+    }
 
     @PutMapping("/EditAppointments/{id}")
-    public ResponseEntity<?> EditAppointments(@PathVariable Long id,@RequestBody Date date) {
-        userService.EditDate(id,date);
+    public ResponseEntity<?> EditAppointments(@PathVariable Long id,@RequestParam("date") String date) {
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy:MM:dd HH:mm");
+        LocalDateTime  d1 = LocalDateTime.parse(date, df);
+
+
+        userService.EditDate(id,d1);
+
+        return ResponseEntity.ok().build();
+    }
+    @PutMapping("/setAppointmentDate/{id}")
+    public ResponseEntity<?> setAppointmentDate(@PathVariable Long id,@RequestBody LocalTime time){
+        userService.setAppointmentDate(id,time);
 
         return ResponseEntity.ok().build();
     }
